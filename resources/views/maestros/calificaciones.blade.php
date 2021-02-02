@@ -9,7 +9,9 @@
             
             @foreach ($materias as $materia)
             
-            <div class="cita-perfil">
+            
+              @isset($materia->materia)
+              <div class="cita-perfil">
               
                     <p>Materia: {{$materia->materia}}</p>
                     <p>Alumno: {{$materia->no_control_del_alumno}}</p>
@@ -31,10 +33,15 @@
                                 <input type="hidden" id="password" name="password" value="{{$materia->contrasenia}}">
                         <input type="submit" value="Editar Calificaciones" id="Registrarse">
                     </form>
-
-
                 </div>
+                    @endisset
+                
             @endforeach
+            @isset($materias[0]["hay_otras"])
+            <div class="cita-perfil">
+                <P>No hay materias a su cargo</P>
+            </div>
+            @endisset
         </div>   
     {{-- @foreach ($materias as $materia)
         

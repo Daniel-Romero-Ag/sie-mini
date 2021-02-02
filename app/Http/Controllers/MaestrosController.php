@@ -59,8 +59,16 @@ class MaestrosController extends Controller
                     $materias[]=$value;
                     
                 }
-       
-                return view('maestros.calificaciones',compact("materias"));
+                if(isset($materias)){
+                    return view('maestros.calificaciones',compact("materias"));
+                }else{
+                    $materias[0]["nombre"]="Daniel";
+                    $materias[0]["apellido_paterno"]="Romero";
+                    $materias[0]["apellido_materno"]="Aguilar";
+                    $materias[0]["hay_otras"]="no";
+                    return view('maestros.calificaciones',compact("materias"));
+                }
+                
                 // $alumnoMaestro= Maestro::where("id",$maestroCalif)
 
     }
