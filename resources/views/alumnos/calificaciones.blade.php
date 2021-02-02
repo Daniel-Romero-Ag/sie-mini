@@ -61,12 +61,8 @@
         <form action="{{route('materias.agregar')}}">
             
             <input type="hidden" name="id_user" value="{{$materias[0]["id_user"]}}">
-            @isset($materiasId)
-            @foreach ($materiasId as $materiaId)
-                <input type="hidden" name="materiaID[]" value="{{$materiaId}}">
-            @endforeach   
-            @endisset
-              
+           
+             El valor del id usuario es:{{$materias[0]["id_user"]}} 
             <input type="submit" value="Agregar materias">
         </form>
     </div>

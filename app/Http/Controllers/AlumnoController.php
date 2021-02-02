@@ -66,8 +66,7 @@ class AlumnoController extends Controller
                     $materias[0]["nombre"]=$alumnoCalif[0]["nombre"];
                     $materias[0]["apellido_paterno"]=$alumnoCalif[0]["apellido_paterno"];
                     $materias[0]["apellido_materno"]=$alumnoCalif[0]["apellido_materno"];
-                    $materias[0]["id_user"]=$alumnoCalif[0]["id_user"];
-                    
+                    $materias[0]["id_user"]=$alumnoCalif[0]["id"];
                     
                     return view('alumnos.calificaciones',compact("materias","materiasDisp"));
                     
@@ -85,6 +84,7 @@ class AlumnoController extends Controller
         return view("alumnos.cargarMaterias",["datos"=>$datos]);
     }
     public function cargarMaterias(Request $request){
+        
         $cursos=[];
         $alumno= Alumno::where("id_user",$request->id_usuario)->get();
         
