@@ -13,7 +13,7 @@
         @foreach ($datos["materias"] as $dato)
         <div class="cita-perfil">
         <label for="{{$dato->id}}">Materia: {{$dato->nombre}}</label>
-        <input type="checkbox" name="{{$dato->id}}" id="Creditos: {{$dato->id}}  ">
+        <input type="checkbox" name="{{$dato->materia_disponible_id}}" id="Creditos: {{$dato->id}}  ">
     </div>
         @endforeach
         <input type="hidden" name="id_usuario" value={{$datos["id_user"]}}>

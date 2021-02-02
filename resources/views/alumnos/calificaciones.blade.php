@@ -14,7 +14,9 @@
                         {{$materia->materia}}
                         @endisset</p>
                     <p>Maestro:
-                        
+                        @isset($materia->nombre_maestro)
+                        {{$materia->nombre_maestro}}
+                        @endisset</p>
                        </p>
                     <p>Unidad 1: 
                         @isset($materia->unidad_1)
@@ -60,8 +62,13 @@
         @endforeach
         <form action="{{route('materias.agregar')}}">
             
+           
             <input type="hidden" name="id_user" value="{{$materias[0]["id_user"]}}">
            
+@foreach ($materiasDisp as $materiaDisp)
+    <input type="hidden" name="id[]" value="{{$materiaDisp->materia_disp_id}}">
+@endforeach
+
              El valor del id usuario es:{{$materias[0]["id_user"]}} 
             <input type="submit" value="Agregar materias">
         </form>

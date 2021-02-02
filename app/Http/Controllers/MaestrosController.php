@@ -40,12 +40,13 @@ class MaestrosController extends Controller
         return view('maestros.login',["login"=>true]);
     }
     public function login(Request $request){
-        $maestroCalif = User::select("users.nombre","apellido_paterno","apellido_materno","users.email as correo","users.password as contrasenia","alumno_no_control","id_maestros","id_materia","id_maestros_materias_alumnos","unidad_1","unidad_2","unidad_3","promedio","calificaciones.id as calificaciones_id" )
+        $maestroCalif = User::select("users.nombre","apellido_paterno","apellido_materno","users.email as correo","users.password as contrasenia","alumno_no_control","id_maestro","materias_disponibles.id","id_materia","id_materias_alumnos","unidad_1","unidad_2","unidad_3","promedio","calificaciones.id as calificaciones_id" )
                 ->where("email",$request->email)
                 ->where("password",$request->password)
                 ->join('maestros', 'maestros.id_user', '=', 'users.id')
-                ->join('maestros_materias_alumnos', 'maestros_materias_alumnos.id_maestros', '=', 'maestros.id')
-                ->join('calificaciones', 'calificaciones.id_maestros_materias_alumnos', '=', 'maestros_materias_alumnos.id')
+                ->join('materias_disponibles', 'materias_disponibles.id_maestro', '=', 'maestros.id')
+                ->join('materias_alumnos', 'materias_alumnos.id_materia_disponible', '=', 'materias_disponibles.id')
+                ->join('calificaciones', 'calificaciones.id_materias_alumnos', '=', 'materias_alumnos.id')
                 // ->where('estudios_programados.id_paciente',$paciente->id)
                 ->get();
             
@@ -59,6 +60,7 @@ class MaestrosController extends Controller
                     $materias[]=$value;
                     
                 }
+                
                 if(isset($materias)){
                     return view('maestros.calificaciones',compact("materias"));
                 }else{
@@ -73,14 +75,13 @@ class MaestrosController extends Controller
 
     }
     public function login2(Request $request){
-        $request->email=$request->correo;
-        $request->password=$request->contrasenia;
-        $maestroCalif = User::select("users.nombre","apellido_paterno","apellido_materno","users.email as correo","users.password as contrasenia","alumno_no_control","id_maestros","id_materia","id_maestros_materias_alumnos","unidad_1","unidad_2","unidad_3","promedio","calificaciones.id as calificaciones_id" )
-                ->where("email",$request->email)
-                ->where("password",$request->password)
+        $maestroCalif = User::select("users.nombre","apellido_paterno","apellido_materno","users.email as correo","users.password as contrasenia","alumno_no_control","id_maestro","materias_disponibles.id","id_materia","id_materias_alumnos","unidad_1","unidad_2","unidad_3","promedio","calificaciones.id as calificaciones_id" )
+                ->where("email",$request->correo)
+                ->where("password",$request->contrasenia)
                 ->join('maestros', 'maestros.id_user', '=', 'users.id')
-                ->join('maestros_materias_alumnos', 'maestros_materias_alumnos.id_maestros', '=', 'maestros.id')
-                ->join('calificaciones', 'calificaciones.id_maestros_materias_alumnos', '=', 'maestros_materias_alumnos.id')
+                ->join('materias_disponibles', 'materias_disponibles.id_maestro', '=', 'maestros.id')
+                ->join('materias_alumnos', 'materias_alumnos.id_materia_disponible', '=', 'materias_disponibles.id')
+                ->join('calificaciones', 'calificaciones.id_materias_alumnos', '=', 'materias_alumnos.id')
                 // ->where('estudios_programados.id_paciente',$paciente->id)
                 ->get();
             
@@ -94,9 +95,16 @@ class MaestrosController extends Controller
                     $materias[]=$value;
                     
                 }
+                
+                if(isset($materias)){
+                    return view('maestros.calificaciones',compact("materias"));
+                }else{
+                    $materias[0]["nombre"]="Daniel";
+                    $materias[0]["apellido_paterno"]="Romero";
+                    $materias[0]["apellido_materno"]="Aguilar";
+                    $materias[0]["hay_otras"]="no";
+                    return view('maestros.calificaciones',compact("materias"));
+                }
        
-                return view('maestros.calificaciones',compact("materias"));
-                // $alumnoMaestro= Maestro::where("id",$maestroCalif)
-
     }
 }

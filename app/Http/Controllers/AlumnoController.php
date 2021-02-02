@@ -7,6 +7,8 @@ use App\Models\Calificacione;
 use App\Models\Maestro;
 use App\Models\Maestros_materias_alumno;
 use App\Models\Materia;
+use App\Models\Materias_alumno;
+use App\Models\Materias_disponible;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Mockery\Undefined;
@@ -37,27 +39,67 @@ class AlumnoController extends Controller
         return view('alumnos.login',["login"=>true]);
     }
     public function login(Request $request){
-        $materiasDisp=Materia::all();
+        $materiasDisp=Materias_disponible::
+        select("materias_disponibles.id as materia_disp_id","id_materia","id_maestro","clave_carrera","id_semestre","nombre","creditos")
+        ->join('materias', 'materias.id', '=', 'materias_disponibles.id_materia')->get();
+
+
+        $alumno=User::where("email",$request->email)
+        ->where("password",$request->password)
+        ->join('alumnos', 'alumnos.id_user', '=', 'users.id')->get();
+
+        $alumnoCalif =User::where("email",$request->email)
+        ->where("password",$request->password)
+        ->join('alumnos', 'alumnos.id_user', '=', 'users.id')
+        ->join('materias_alumnos', 'materias_alumnos.alumno_no_control', '=', 'alumnos.no_control')
+        ->join('calificaciones', 'calificaciones.id_materias_alumnos', '=', 'materias_alumnos.id')
+        // ->where('estudios_programados.id_paciente',$paciente->id)
+        ->get();
         
-        $alumnoCalif = User::where("email",$request->email)
-                ->where("password",$request->password)
-                ->join('alumnos', 'alumnos.id_user', '=', 'users.id')
-                ->join('maestros_materias_alumnos', 'maestros_materias_alumnos.alumno_no_control', '=', 'alumnos.no_control')
-                ->join('calificaciones', 'calificaciones.id_maestros_materias_alumnos', '=', 'maestros_materias_alumnos.id')
-                // ->where('estudios_programados.id_paciente',$paciente->id)
-                ->get();
-                
+        // return $alumnoCalif;
                 foreach ($alumnoCalif as $value) {
-                    $maestro=Maestro::where("id",$value->id_maestros)->get();
+                    
+                    $maestro=Materias_disponible::where("materias_disponibles.id",$value->id_materia_disponible)
+                    ->join('maestros', 'maestros.id', '=', 'materias_disponibles.id_maestro')
+                    ->get();
                     $maestro=$maestro->all();
-                    $value["nombre_maestro"]=$maestro[0]["nombre"];
-                    $materia=Materia::where("id",$value->id_materia)->get();
+                    if(isset($maestro[0]["nombre"])){
+                        $value["nombre_maestro"]=$maestro[0]["nombre"];
+                    }
+                    
+                    
+                    $materia=Materias_disponible::where("materias_disponibles.id",$value->id_materia_disponible)
+                    ->join('materias', 'materias.id', '=', 'materias_disponibles.id_materia')
+                    ->get();
                     $materia=$materia->all();
                     $value["materia"]=$materia[0]["nombre"];
                     $materias[]=$value;
                     
                 }
+    
                 if(isset($materias)){
+                    foreach ($materias as $materia) {
+                        $materiasDisponibles[]=$materia->id_materia_disponible;
+                    }
+                    
+                    foreach ($materiasDisp as $key=> $materiaGeneral) {
+                        foreach ($materiasDisponibles as $value) {
+                            if($materiaGeneral->materia_disp_id==$value){
+                                $materiasDisp[$key]["estado"]="usado";
+                            }
+                        }
+                    }
+                   
+                   foreach ($materiasDisp as $materiaEsp) {
+                       if(isset($materiaEsp["estado"])){}
+                       else{
+                           $materiaSinUsar[]=$materiaEsp;
+                       }
+                   } 
+                   $materiasDisp= $materiaSinUsar;
+                    
+                    
+                    
                     return view('alumnos.calificaciones',compact("materias","materiasDisp"));
                 }else{
                     $alumnoCalif = User::where("email",$request->email)
@@ -75,16 +117,31 @@ class AlumnoController extends Controller
                 
     }
     public function agregarMaterias(Request $request){
-        
-        $materiasDisp=Materia::all();
+    
+        $materiasDisp=Materias_disponible::select("materias_disponibles.id as materia_disponible_id","id_materia","id_maestro","clave_carrera","id_semestre","nombre","creditos")
+        ->join('materias', 'materias.id', '=', 'materias_disponibles.id_materia')->get();
+        foreach ($materiasDisp as $key => $materiaGeneral) {
+            foreach($request["id"] as $value){
+
+                if($materiaGeneral->materia_disponible_id==$value){
+                    $materiasDisp[$key]["estado"]="usado";
+                }
+            }
+        }
+        foreach ($materiasDisp as $key => $value) {
+            if(isset($value["estado"])){
+                $opciones[]=$materiasDisp[$key];
+            }
+        }
+        $materiasDisp=$opciones;
         $request["materias"]=$materiasDisp;
         $datos=$request->all();
-        
-        
+    
+
         return view("alumnos.cargarMaterias",["datos"=>$datos]);
     }
     public function cargarMaterias(Request $request){
-        
+         
         $cursos=[];
         $alumno= Alumno::where("id_user",$request->id_usuario)->get();
         
@@ -99,14 +156,14 @@ class AlumnoController extends Controller
 
         }
         foreach ($cursos as $value) {
-            $cargar= new Maestros_materias_alumno();
+            $cargar= new Materias_alumno();
             $cargar->alumno_no_control=$alumno[0]["no_control"];
-            $cargar->id_maestros=1;    
-            $cargar->id_materia=$value;
+                
+            $cargar->id_materia_disponible=$value;
             $cargar->save();    
             
             $calificacion= new Calificacione();
-            $calificacion->id_maestros_materias_alumnos=$cargar->id;
+            $calificacion->id_materias_alumnos=$cargar->id;
             $calificacion->unidad_1=0;
             $calificacion->unidad_2=0;
             $calificacion->unidad_3=0;

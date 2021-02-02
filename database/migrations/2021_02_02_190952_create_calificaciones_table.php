@@ -15,8 +15,8 @@ class CreateCalificacionesTable extends Migration
     {
         Schema::create('calificaciones', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_maestros_materias_alumnos');
-            $table->foreign('id_maestros_materias_alumnos')->references('id')->on('maestros_materias_alumnos');
+            $table->unsignedBigInteger('id_materias_alumnos');
+            $table->foreign('id_materias_alumnos')->references('id')->on('materias_alumnos');
             $table->string("unidad_1",200);
             $table->string("unidad_2",200);
             $table->string("unidad_3",200);
