@@ -51,27 +51,26 @@
            
         <h2>Materias disponibles</h2>
         <div class="citas-perfil">
-        @foreach ($materiasDisp as $materiaDisp)
+            @isset($materiasDisp)
+                @foreach ($materiasDisp as $materiaDisp)
         
-            <div class="cita-perfil">
-                <p>Materia: {{$materiaDisp->nombre}}</p>
-                <p>Creditos: {{$materiaDisp->creditos}}</p>
-                
-            </div>
-        
-        @endforeach
-        <form action="{{route('materias.agregar')}}">
-            
-           
-            <input type="hidden" name="id_user" value="{{$materias[0]["id_user"]}}">
-           
-@foreach ($materiasDisp as $materiaDisp)
-    <input type="hidden" name="id[]" value="{{$materiaDisp->materia_disp_id}}">
-@endforeach
+                <div class="cita-perfil">
+                    <p>Materia: {{$materiaDisp->nombre}}</p>
+                    <p>Creditos: {{$materiaDisp->creditos}}</p>
 
-             El valor del id usuario es:{{$materias[0]["id_user"]}} 
-            <input type="submit" value="Agregar materias">
-        </form>
+                 </div>
+        
+                @endforeach
+                <form action="{{route('materias.agregar')}}">
+                    <input type="hidden" name="id_user" value="{{$materias[0]["id_user"]}}">           
+                    @foreach ($materiasDisp as $materiaDisp)
+                        <input type="hidden" name="id[]" value="{{$materiaDisp->materia_disp_id}}">
+                    @endforeach
+                    El valor del id usuario es:{{$materias[0]["id_user"]}} 
+                    <input type="submit" value="Agregar materias">
+                </form>
+            @endisset
+                
     </div>
 </main>
 

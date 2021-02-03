@@ -96,8 +96,12 @@ class AlumnoController extends Controller
                            $materiaSinUsar[]=$materiaEsp;
                        }
                    } 
-                   $materiasDisp= $materiaSinUsar;
-                    
+                   
+                    if(isset($materiaSinUsar)){
+                        $materiasDisp= $materiaSinUsar;   
+                    }else{
+                        $materiasDisp=null;
+                    }
                     
                     
                     return view('alumnos.calificaciones',compact("materias","materiasDisp"));
