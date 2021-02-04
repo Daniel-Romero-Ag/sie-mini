@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AlumnosRequest;
 use App\Models\Alumno;
 use App\Models\Calificacione;
 use App\Models\Maestro;
@@ -19,7 +20,8 @@ class AlumnoController extends Controller
         $usuarios=User::get();
         return view('alumnos.create');
     }
-    public function store(Request $request){
+    public function store(AlumnosRequest $request){
+        
         $user= new User();
         $user->nombre=$request->nombre;
         $user->apellido_paterno=$request->apellido_paterno;
@@ -33,7 +35,7 @@ class AlumnoController extends Controller
         $alumno->id_user=$user->id;
         $alumno->id_semestre=$request->id_semestre;
         $alumno->save();
-        return "Alumno agregado con exito";
+        return view('alumnos.alumnoAgregado');
     }
     public function loginView(Request $request){
         return view('alumnos.login',["login"=>true]);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumno;
+use App\Http\Requests\MaestrosRequest;
 use App\Models\Maestro;
 use App\Models\Materia;
 use App\Models\User;
@@ -16,7 +17,7 @@ class MaestrosController extends Controller
         $usuarios=User::get();
         return view('maestros.create');
     }
-    public function store(Request $request){
+    public function store(MaestrosRequest $request){
         $user= new User();
         $user->nombre=$request->nombre;
         $user->apellido_paterno=$request->apellido_paterno;
@@ -31,7 +32,7 @@ class MaestrosController extends Controller
         $maestro->nombre=$request->nombre;
         $maestro->cedula=$request->cedula;
         $maestro->save();
-        return "Alumno agregado con exito";
+        return view('maestros.maestroAgregado');
     }
 
 

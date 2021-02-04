@@ -19,14 +19,14 @@
                 <label for="apellido_paterno">Apellido Paterno:</label>
                 <input type="text" id="apellido_paterno" name="apellido_paterno">
             </div>
-            @error('contraseña')
+            @error('apellido_paterno')
                 {{$message}}
             @enderror
             <div class="campo">
                 <label for="apellido_materno">Apellido Materno:</label>
                 <input type="text" id="apellido_materno" name="apellido_materno">
             </div>
-            @error('edad')
+            @error('apellido_materno')
                 {{$message}}
             @enderror
             <div class="campo">
@@ -40,13 +40,16 @@
                 <label for="email">Email:</label>
                 <input type="mail" id="email" name="email">   
             </div>
-            @error('id_sexos')
+            @error('email')
                 {{$message}}
             @enderror
             <div class="campo">
                 <label for="password">Contraseña:</label>
                 <input type="tel" id="password" name="password">
             </div>
+            @error('password')
+                {{$message}}
+            @enderror
         </fieldset>
         
         <fieldset>
@@ -56,11 +59,16 @@
                 <label for="no_control">Numero de control:</label>
                 <input type="tel" id="no_control" name="no_control"> 
             </div>
+            @error('no_control')
+            {{$message}}
+        @enderror
             <div class="campo">
                 <label for="semestre">Semestre:</label>
                 <input type="text" id="id_semestre" name="id_semestre"> 
             </div>
-            
+            @error('id_semestre')
+            {{$message}}
+        @enderror
         </fieldset>
     </div>
     <input type="submit" value="registro">
