@@ -1,3 +1,8 @@
+Para instalar el proyecto es necesario actualizar las dependencias (composer update)
+Tambien modificar el usuario y/o contraseña a la base de datos de ser necesario en el archivo .env
+Finalmente importar la base de datos en el archivo mini-sie2.sql
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
